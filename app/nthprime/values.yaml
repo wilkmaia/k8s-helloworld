@@ -1,0 +1,19 @@
+# Default values for nthprime.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  address: gcr.io/vii-cobepi/hello-app:v1
+
+name: "nthprime"
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 5000
+
+cpu:
+  limit: "0.5"
+  request: "0.2"
