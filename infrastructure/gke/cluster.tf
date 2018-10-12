@@ -1,7 +1,6 @@
 resource "google_container_cluster" "nthprime" {
-  name               = "${var.cluster_name}"
-  zone               = "${var.zone}"
-  initial_node_count = 1
+  name = "${var.cluster_name}"
+  zone = "${var.zone}"
 
   addons_config {
     network_policy_config {
@@ -14,15 +13,38 @@ resource "google_container_cluster" "nthprime" {
     password = "${var.password}"
   }
 
+  node_pool {
+    name = "default-pool"
+  }
+}
+
+resource "google_container_node_pool" "nthprime" {
+  name    = "nthprime"
+  cluster = "${google_container_cluster.nthprime.name}"
+  zone    = "${var.zone}"
+
   node_config {
-    oauth_scopes = [
-      "https://www.googleapis.com/auth/devstorage.read_only",
-      "https://www.googleapis.com/auth/logging.write",
-      "https://www.googleapis.com/auth/monitoring",
-      "https://www.googleapis.com/auth/service.management.readonly",
-      "https://www.googleapis.com/auth/servicecontrol",
-      "https://www.googleapis.com/auth/trace.append",
-      "https://www.googleapis.com/auth/compute",
-    ]
+    machine_type = "${var.machine_type}"
+  }
+
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 3
+  }
+}
+
+resource "google_compute_autoscaler" "nthprime" {
+  name   = "nthprime-autoscaler"
+  zone   = "${var.zone}"
+  target = "${google_container_cluster.nthprime.instance_group_urls.0}"
+
+  autoscaling_policy = {
+    max_replicas    = 3
+    min_replicas    = 1
+    cooldown_period = 60
+
+    cpu_utilization {
+      target = 0.6
+    }
   }
 }
