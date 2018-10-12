@@ -16,6 +16,10 @@ resource "google_container_cluster" "nthprime" {
   node_pool {
     name = "default-pool"
   }
+
+  local-exec {
+    command = "./helm/add_helm.sh"
+  }
 }
 
 resource "google_container_node_pool" "nthprime" {

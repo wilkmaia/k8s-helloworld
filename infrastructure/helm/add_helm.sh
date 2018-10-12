@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+echo "update cluster data"
+gcloud container clusters get-credentials nthprime
+
 echo "install helm"
 # installs helm with bash commands for easier command line integration
 curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
