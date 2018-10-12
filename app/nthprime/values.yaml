@@ -15,5 +15,5 @@ service:
   targetPort: 5000
 
 cpu:
-  limit: "0.5"
+  limit: "0.2"
   request: "0.2"
